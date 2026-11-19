@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 
 type Props = {
@@ -6,28 +7,43 @@ type Props = {
   image?: string;
 };
 
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
+
 export default function ProfileHeader({ name, bio, image }: Props) {
   return (
     <section className="flex flex-col items-center text-center">
-      {image ? (
-        <Image
-          src={image}
-          alt={`${name} 프로필 사진`}
-          width={112}
-          height={112}
-          priority
-          className="h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-md"
-        />
-      ) : (
-        <div
-          aria-hidden
-          className="flex h-28 w-28 items-center justify-center rounded-full bg-emerald-600 text-4xl font-bold text-white ring-4 ring-white shadow-md"
-        >
-          {name.slice(0, 1)}
-        </div>
-      )}
-      <h1 className="mt-4 text-xl font-bold">{name}</h1>
-      <p className="mt-1 text-sm text-stone-600">{bio}</p>
+      <div className="rise" style={step(0)}>
+        {image ? (
+          <Image
+            src={image}
+            alt={`${name} 프로필 사진`}
+            width={72}
+            height={72}
+            priority
+            className="h-[72px] w-[72px] rounded-full object-cover"
+          />
+        ) : (
+          <div
+            aria-hidden
+            className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-moss text-[1.75rem] font-semibold text-paper"
+          >
+            {name.slice(0, 1)}
+          </div>
+        )}
+      </div>
+
+      <h1
+        className="rise mt-7 text-[2.75rem] leading-[1.05] font-extrabold tracking-[-0.045em]"
+        style={step(1)}
+      >
+        {name}
+      </h1>
+      <p
+        className="rise mt-3 max-w-[28ch] text-balance text-[0.95rem] leading-relaxed text-mute"
+        style={step(2)}
+      >
+        {bio}
+      </p>
     </section>
   );
 }
