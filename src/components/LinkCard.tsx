@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
+
 type Props = {
   id: string;
   title: string;
   url: string;
+  /** 처음 보여 줄 클릭 수. null이면 숫자를 숨김(DB 미연결) */
+  initialClicks: number | null;
 };
 
 function recordClick(id: string) {
@@ -21,15 +25,31 @@ function recordClick(id: string) {
   }
 }
 
-export default function LinkCard({ id, title, url }: Props) {
+export default function LinkCard({ id, title, url, initialClicks }: Props) {
+  const [clicks, setClicks] = useState(initialClicks);
+
+  function handleClick() {
+    recordClick(id);
+    // 서버 응답을 기다리지 않고 화면의 숫자를 바로 1 올림
+    setClicks((c) => (c === null ? c : c + 1));
+  }
+
   return (
     <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={() => recordClick(id)}
+      onClick={handleClick}
       className="group relative flex w-full items-center justify-center rounded-2xl border border-line bg-white px-5 py-[1.05rem] text-[0.975rem] font-semibold tracking-[-0.015em] transition-colors duration-200 hover:border-ink hover:bg-ink hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-moss active:scale-[0.99]"
     >
+      {clicks !== null && (
+        <span
+          className="absolute left-5 text-xs font-medium tabular-nums text-mute transition-colors duration-200 group-hover:text-paper/70"
+        >
+          {clicks.toLocaleString("ko-KR")}
+          <span className="sr-only">회 클릭됨</span>
+        </span>
+      )}
       <span>{title}</span>
       <svg
         aria-hidden
